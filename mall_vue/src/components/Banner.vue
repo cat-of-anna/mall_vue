@@ -254,12 +254,13 @@
       </div>
       <!-- 轮播图-->
       <div class="g-banner-content"  @mouseover="state.current_menu=-1">
-        <el-carousel :interval="5000" arrow="always" height="482px">
-          <el-carousel-item v-for="banner in banner.banner_list">
+        <el-carousel :interval="5000" arrow="always" height="482px" v-if="banner.banner_list[0]">
+          <el-carousel-item v-for="(banner, key) in banner.banner_list" :key="key">
             <a :href="banner.link" v-if="banner.is_http"><img :src="banner.image" :alt="banner.name" style="width: 100%;height: 100%;"></a>
             <router-link :to="banner.link" v-else><img :src="banner.image" :alt="banner.name" style="width: 100%;height: 100%;"></router-link>
           </el-carousel-item>
         </el-carousel>
+
       </div>
     </div>
   </div>
@@ -272,7 +273,7 @@ const state = reactive({
   current_menu: -1,
 })
 
-banner.get_banner_url().then(response => {
+banner.get_banner_list().then(response => {
   banner.banner_list = response.data;
 })
 
