@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import Login from "src/components/Login.vue"
+import Login from "src/components/Login"
 
 </script>
 
