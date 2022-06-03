@@ -37,7 +37,7 @@
   </div>
 
   <el-dialog :width="600" v-model="state.show_login">
-    <Login></Login>
+    <Login @successHandle="login_success"></Login>
   </el-dialog>
 
 
@@ -57,6 +57,10 @@ const state = reactive({
 nav.get_header_url().then(response => {
   nav.header_nav_list = response.data;
 })
+
+const login_success = () => {
+  state.show_login = false;
+}
 
 
 
