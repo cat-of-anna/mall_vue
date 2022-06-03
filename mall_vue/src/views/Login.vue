@@ -16,6 +16,8 @@
 <script setup>
 import Login from "../components/Login.vue";
 import router from "../router";
+import {useStore} from "vuex"
+const store = useStore()
 
 const login_success = ()=>{
   router.push("/");

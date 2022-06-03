@@ -31,6 +31,9 @@ import user from "../api/user";
 import { ElMessage } from "element-plus"
 const emit = defineEmits(["successHandle", ]);
 
+import {useStore} from "vuex"
+const store = useStore()
+
 
 // 登录处理
 const loginHandler = ()=>{
@@ -55,6 +58,14 @@ const loginHandler = ()=>{
     }else{
       sessionStorage.token = response.data.token;
     }
+
+    // vuex存储用户登录信息，保存token，并根据用户的选择，是否记住密码
+    let payload = response.data.token.split(".")[1]  // 载荷
+    let payload_data = JSON.parse(atob(payload)) // 用户信息
+    console.log(payload_data)
+    store.commit("login", payload_data)
+
+
     // 关闭登录弹窗，对外发送一个登录成功的信息
     user.account = "";
     user.password = "";
