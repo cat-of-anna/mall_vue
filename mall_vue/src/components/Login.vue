@@ -14,7 +14,7 @@
       </label>
       <p>忘记密码</p>
     </div>
-    <button class="login_btn" @click="loginHandler">登录</button>
+    <button class="login_btn" @click="showCaptcha">登录</button>
     <p class="go_login" >没有账号 <span>立即注册</span></p>
   </div>
   <div class="inp" v-show="user.login_type===1">
@@ -34,20 +34,33 @@ const emit = defineEmits(["successHandle", ]);
 import {useStore} from "vuex"
 const store = useStore()
 
+// 显示验证码
+const showCaptcha = ()=>{
+  const captcha1 = new TencentCaptcha('2007606968', (res)=>{
+    // 接收验证结果的回调函数
+    /* res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+       res（客户端出现异常错误 仍返回可用票据） = {ret: 0, ticket: "String", randstr: "String", errorCode: Number, errorMessage: "String"}
+       res（用户主动关闭验证码）= {ret: 2}
+    */
+    console.log(res);
+    // 调用登录处理
+    loginHandler(res);
+  });
+  captcha1.show(); // 显示验证码
+}
 
 // 登录处理
-const loginHandler = ()=>{
+const loginHandler = (res)=>{
   // 验证数据
   if(user.username.length<1 || user.password.length<1){
     // 错误提示
-    console.log("错了哦，用户名或密码不能为空！");
     ElMessage.error("错了哦，用户名或密码不能为空！");
   }
 
   // 登录请求
   user.login({
-    "username": user.username,
-    "password": user.password,
+    ticket: res.ticket,
+    randstr: res.randstr,
   }).then(response=> {
     // 删除之前存留的token
     localStorage.removeItem("token");

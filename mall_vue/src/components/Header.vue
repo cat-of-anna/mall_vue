@@ -72,6 +72,7 @@ import nav from "../api/nav.js";
 import Login from "./Login.vue";
 import {reactive} from "vue";
 import {UserFilled, List, Setting, Position} from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus"
 
 import {useStore} from "vuex"
 const store = useStore()

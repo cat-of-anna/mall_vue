@@ -8,8 +8,10 @@ const user = reactive({
   remember: false,  // 记住密码
   mobile: "", // 手机号
   code: "", //验证码
-  login(data) {  // 用户登录
+  login(res) {  // 用户登录
     return http.post("/users/login/", {
+      "ticket": res.ticket,
+      "randstr": res.randstr,
       "username": this.username,
       "password": this.password,
     })
@@ -17,5 +19,5 @@ const user = reactive({
 
 })
 
-export default user
+export default user;
 
