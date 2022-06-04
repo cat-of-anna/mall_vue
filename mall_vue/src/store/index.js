@@ -36,6 +36,11 @@ export default createStore({
   mutations: { // 操作数据的方法，相当于methods
     login (state, user) {  // state 就是上面的state   state.user 就是上面的数据
       state.user = user;
+    },
+    logout(state) {
+      state.user = {};
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     }
   }
 })
