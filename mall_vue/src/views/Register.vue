@@ -31,7 +31,7 @@ import {useStore} from "vuex"
 import "../utils/TCaptcha"
 import user from '../api/user.js'
 import settings from "../settings"
-import http from "../utils/http";
+import router from "../router/index.js"
 
 const store = useStore()
 
