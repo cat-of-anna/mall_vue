@@ -29,6 +29,7 @@
 <script setup>
 import user from "../api/user";
 import { ElMessage } from "element-plus"
+import settings from "../settings";
 const emit = defineEmits(["successHandle", ]);
 
 import {useStore} from "vuex"
@@ -36,7 +37,7 @@ const store = useStore()
 
 // 显示验证码
 const showCaptcha = ()=>{
-  const captcha1 = new TencentCaptcha('2007606968', (res)=>{
+  const captcha1 = new TencentCaptcha(settings.captcha_app_id, (res)=>{
     // 接收验证结果的回调函数
     /* res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
        res（客户端出现异常错误 仍返回可用票据） = {ret: 0, ticket: "String", randstr: "String", errorCode: Number, errorMessage: "String"}
@@ -80,7 +81,7 @@ const loginHandler = (res)=>{
 
 
     // 关闭登录弹窗，对外发送一个登录成功的信息
-    user.account = "";
+    user.username = "";
     user.password = "";
     user.mobile = "";
     user.code = "";
