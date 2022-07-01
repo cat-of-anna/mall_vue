@@ -29,29 +29,35 @@
 <script setup>
 import user from "../api/user";
 import { ElMessage } from "element-plus"
-import settings from "../settings";
+// import settings from "../settings";
 const emit = defineEmits(["successHandle", ]);
 
 import {useStore} from "vuex"
 const store = useStore()
 
 // 显示验证码
-const showCaptcha = ()=>{
-  const captcha1 = new TencentCaptcha(settings.captcha_app_id, (res)=>{
-    // 接收验证结果的回调函数
-    /* res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
-       res（客户端出现异常错误 仍返回可用票据） = {ret: 0, ticket: "String", randstr: "String", errorCode: Number, errorMessage: "String"}
-       res（用户主动关闭验证码）= {ret: 2}
-    */
-    console.log(res);
-    // 调用登录处理
-    loginHandler(res);
-  });
-  captcha1.show(); // 显示验证码
+// const showCaptcha = ()=>{
+//   const captcha1 = new TencentCaptcha(settings.captcha_app_id, (res)=>{
+//     // 接收验证结果的回调函数
+//     /* res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+//        res（客户端出现异常错误 仍返回可用票据） = {ret: 0, ticket: "String", randstr: "String", errorCode: Number, errorMessage: "String"}
+//        res（用户主动关闭验证码）= {ret: 2}
+//     */
+//     console.log(res);
+//     // 调用登录处理
+//     loginHandler(res);
+//   });
+//   captcha1.show(); // 显示验证码
+// }
+
+// 显示验证码
+const showCaptcha = () => {
+  // 验证码占位
+  loginHandler();
 }
 
 // 登录处理
-const loginHandler = (res)=>{
+const loginHandler = ()=>{
   // 验证数据
   if(user.username.length<1 || user.password.length<1){
     // 错误提示
@@ -60,8 +66,10 @@ const loginHandler = (res)=>{
 
   // 登录请求
   user.login({
-    ticket: res.ticket,
-    randstr: res.randstr,
+    // ticket: res.ticket,
+    // randstr: res.randstr,
+    "username": user.username,
+    "password": user.password,
   }).then(response=> {
     // 删除之前存留的token
     localStorage.removeItem("token");
@@ -74,10 +82,10 @@ const loginHandler = (res)=>{
     }
 
     // vuex存储用户登录信息，保存token，并根据用户的选择，是否记住密码
-    let payload = response.data.token.split(".")[1]  // 载荷
-    let payload_data = JSON.parse(atob(payload)) // 用户信息
-    console.log(payload_data)
-    store.commit("login", payload_data)
+    let payload = response.data.token.split(".")[1];  // 载荷
+    let payload_data = JSON.parse(atob(payload)); // 用户信息
+    console.log(payload_data);
+    store.commit("login", payload_data);
 
 
     // 关闭登录弹窗，对外发送一个登录成功的信息
