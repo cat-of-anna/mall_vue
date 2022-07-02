@@ -39,6 +39,14 @@ const routes = [
     name: "User",
     component: () => import("../views/User.vue")
   },
+  { meta: {
+      title: "在线商城-列表",
+      keepAlive: true
+    },
+    path: '/project',
+    name: "Course",
+    component: () => import("../views/Course.vue")
+  },
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置
