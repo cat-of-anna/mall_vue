@@ -9,11 +9,11 @@ const course = reactive({
   category_list: [],  // a list of categories
 
   get_course_direction(){
-    return http.get("/project/directions");
+    return http.get("/project/directions/");
   },
   get_course_categories(){
-    return http.get("/project/categories");
-  }
+    return http.get(`/project/categories/${this.current_direction}/`);
+  },
 })
 
 export default course;

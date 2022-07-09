@@ -139,7 +139,7 @@
 </template>
 
 <script setup>
-import {reactive} from "vue"
+import {reactive, watch} from "vue"
 import Header from "../components/Header.vue"
 import Footer from "../components/Footer.vue"
 import course from "../api/course";
@@ -148,9 +148,19 @@ course.get_course_direction().then(response=>{
   course.direction_list = response.data;
 })
 
-course.get_course_categories().then(response=>{
-  course.category_list = response.data;
-})
+const get_category = () => {
+  course.current_category = 0;  // reset current category
+  course.get_course_categories().then(response=>{
+    course.category_list = response.data;  // get category list
+  })
+}
+
+watch(
+    () => course.current_direction,
+    () => {
+      get_category();  // send a request to get a new category list
+    }
+)
 
 </script>
 
