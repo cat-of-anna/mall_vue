@@ -46,9 +46,9 @@
       <div class="main-wrap">
         <div class="filter clearfix">
           <div class="sort l">
-            <a href="" class="on">最新</a>
-            <a href="">销量</a>
-            <a href="">升级</a>
+            <a href="" :class="{on:course.ordering==='-id'}" @click.prevent.stop="course.ordering=(course.ordering==='-id'?'':'-id')">最新</a>
+            <a href="" :class="{on:course.ordering==='-students'}" @click.prevent.stop="course.ordering=(course.ordering==='-students'?'':'-students')">销量</a>
+            <a href="" :class="{on:course.ordering==='-orders'}" @click.prevent.stop="course.ordering=(course.ordering==='-orders'?'':'-orders')">推荐</a>
           </div>
           <div class="other r clearfix"><a class="course-line l" href="" target="_blank">学习路线</a></div>
         </div>
@@ -74,15 +74,18 @@
           </li>
 
         </ul>
-        <div class="page">
-          <span class="disabled_page">首页</span>
-          <span class="disabled_page">上一页</span>
-          <a href="" class="active">1</a>
-          <a href="">2</a>
-          <a href="">3</a>
-          <a href="">4</a>
-          <a href="">下一页</a>
-          <a href="">尾页</a>
+        <div class="page" v-if="course.count > course.size">  <!-- else not display the bar -->
+          <a href=""  v-if="course.has_perv" @click.prevent.stop="course.page=1">首页</a>
+            <span v-else>首页</span>
+          <a href=""  v-if="course.has_perv" @click.prevent.stop="course.page--">上一页</a>
+            <span v-else>上一页</span>
+          <a href="" v-if="course.has_perv" @click.prevent.stop="course.page--">{{course.page-1}}</a>
+          <a class="active">{{course.page}}</a>
+          <a href="" v-if="course.has_next" @click.prevent.stop="course.page++">{{course.page+1}}</a>
+          <a href="" v-if="course.has_next" @click.prevent.stop="course.page++">下一页</a>
+            <span v-else>下一页</span>
+          <a href="" v-if="course.has_next" @click.prevent.stop="course.page=Math.ceil(course.count/course.size)">尾页</a>
+            <span v-else>尾页</span>
         </div>
       </div>
     </div>
@@ -111,23 +114,50 @@ get_category();  // at start, display the category_list
 const get_course_list = ()=>{
   // 获取课程列表
   course.get_course_list().then(response=>{
-    course.course_list = response.data;
+    course.course_list = response.data.results;
+    // some data about pagination
+    course.count = response.data.count;
+    course.has_perv = !!response.data.previous; // 2 !! to change the typeof(data) to boolean type
+    course.has_next = !!response.data.next;
+    // start the timer of course promotion
+    course.start_timer();
   });
 };
 get_course_list();  // at start, display the course_list
 
+
+// watch the current_direction
 watch(
     () => course.current_direction,
     () => {
       course.current_category=0;
+      course.ordering = "-id";  // reset sort condition
       get_category();  // send a request to get a new category list
       get_course_list();
     }
 )
 
+// watch the current_category
 watch(
     () => course.current_category,
     () => {
+      course.ordering = "-id";  // reset sort condition
+      get_course_list();
+    }
+)
+
+// watch the ordering condition
+watch(
+    ()=>course.ordering,
+    ()=>{
+      get_course_list();
+    }
+)
+
+// watch the page
+watch(
+    ()=>course.page,
+    ()=>{
       get_course_list();
     }
 )
